@@ -3,6 +3,7 @@
 
 import os
 from flask import Flask, request, render_template, abort, url_for, redirect, session, json
+from werkzeug.exceptions import HTTPException
 from datetime import datetime, timedelta
 import sqlite3
 import requests
@@ -21,6 +22,10 @@ def access_db(command: str, params, method: str):
     results = cursor.fetchall() if method=='f' else conn.commit()
     conn.close()
     return results
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    return render_template("erro.html", erro=e), 500
 
 @app.route('/')
 def index():

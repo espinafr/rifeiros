@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% block additional_styles %}
+{% if rifa != [] %}
+<meta property="og:title" content="Rifa {{rifa[0][0]}}">
+<meta name="twitter:title" content="Rifa {{rifa[0][0]}}">
+<meta name="description" content="Rifa número {{rifa[0][1]}}. Comprada por: {{rifa[0][1]}}">
+<meta property="og:description" content="Rifa número {{rifa[0][1]}}. Comprada por: {{rifa[0][1]}}">
+<meta name="twitter:description" content="Rifa número {{rifa[0][1]}}. Comprada por: {{rifa[0][1]}}">
+{%endif%}
 <style>
     a {
         color: black;
