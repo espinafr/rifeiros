@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block additional_styles %}
+<style>
+    .invis {
+        display: none;
+    }
+    p {
+        color: red;
+        margin: 0;
+    }
+    a {
+        position: absolute;
+        left: 1em;
+        bottom: 1em;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<body>
+    <h1>Procurar por recibo de rifa</h1>
+    <form id="rifaconsult">
+        <div>
+            <label for="idrifa">Número da rifa:</label> 
+            <input type="number" name="idrifa" id="idrifa" required>
+        </div>
+        <button type="submit">Procurar</button>
+        <p id="resposta" class="invis"></p>
+    </form>
+    <a href="{{ url_for('login') }}">Administração</a>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $("#rifaconsult").submit(function(e) {
+        e.preventDefault(); 
+        var form = $(this);
+        $.ajax({
+            type: "POST",
+            url: '/procurarrifa',
+            data: form.serialize(),
+            success: function () {
+                document.location.href = '/rifa/'+document.getElementById("idrifa").value
+            },
+            error: function () {
+                var resposta = $('#resposta');
+                resposta.text("Rifa não encontrada");
+                resposta.removeClass("invis");
+            }
+        });
+    });
+</script>
+{% endblock %}

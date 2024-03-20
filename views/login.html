@@ -1,0 +1,56 @@
+
+{% extends "base.html" %}
+{% block additional_styles %}
+<style>
+    .invis {
+        display: none;
+    }
+    p {
+        color: red;
+        margin: 0;
+    }
+    a {
+        position: absolute;
+        left: 1em;
+        bottom: 1em;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<body>
+    <h1>Login</h1>
+    <form id="login">
+        <div>
+            <label for="username">Nome:</label> 
+            <input type="text" name="username" required>
+        </div>
+        <div>
+            <label for="password">Senha:</label>
+            <input type="password" name="password" required>
+        </div>
+        <button type="submit">Entrar</button>
+        <p id="resposta" class="invis"></p>
+    </form>
+    <a href="{{ url_for('index') }}">Voltar</a>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $("#login").submit(function(e) {
+        e.preventDefault(); 
+        var form = $(this);
+        $.ajax({
+            type: "POST",
+            url: '/loginprocess',
+            data: form.serialize(),
+            success: function () {
+                location.reload()
+            },
+            error: function () {
+                var resposta = $('#resposta');
+                resposta.text("Senha errada");
+                resposta.removeClass("invis");
+            }
+        });
+    });
+</script>
+{% endblock %}

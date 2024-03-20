@@ -1,0 +1,192 @@
+
+{% extends "base.html" %}
+{% block additional_links %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+{% endblock %}
+{% block additional_styles %}
+<style>
+    body {
+        padding-top: 1em;
+        min-height: unset;
+    }
+    .invis {
+        display: none;
+    }
+    p.erro {
+        color: red;
+        margin: 0;
+    }
+    p.sucesso {
+        color: rgb(0, 221, 0);
+        margin: 0;
+    }
+
+    .altForm {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1em;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+
+    .topDown {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .topDown > div {
+        display: flex;
+        justify-content: center;
+        gap: .2em;
+        background-color: rgb(104, 104, 104);
+        width: 100%;
+    }
+
+    #Voltar {
+        position: absolute;
+        left: 1em;
+        bottom: 1em;
+    }
+
+    .table-responsive {
+        width: 60%;
+    }
+
+    @media screen and (max-width: 1160px) {
+        .altForm {
+            flex-direction: column;
+        }
+
+        th, td {
+            text-align: center;
+        }   
+
+        .table-responsive {
+            min-width: 100%;
+        }
+
+        #Voltar {
+            position: static;
+            left: unset;
+            bottom: unset;
+        }
+    }
+</style>
+{% endblock %}
+{% block content %}
+<body>
+    <a id="Voltar" href="{{ url_for('index') }}">Voltar</a>
+    <form id="venderRifona">
+        <h1>Vender Rifa</h1>
+        <div class="altForm">
+            <div>
+                <label for="nomeComprador">Nome:</label> 
+                <input type="text" name="nomeComprador" required>
+            </div>
+            <div>
+                <label for="numeroRifa">Número da rifa:</label> 
+                <input type="number" name="numeroRifa" id="numeroRifa" required>
+            </div>
+            <div>
+                <label for="telefone">Telefone:</label> 
+                <input type="text" name="telefone" required>
+            </div>
+            <div>
+                <label for="nomeVendedor">Vendedor:</label>
+                <input type="text" name="nomeVendedor" required>
+            </div>
+            <div>
+                <label for="tipoPagamento">Pagamento por:</label>
+                <div class="topDown">
+                    <div>
+                        <input type="radio" name="tipoPagamento" value="pix" id='pix' checked>
+                        <label for="pix">Pix</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="tipoPagamento" value="dinheiro" id="dindin">
+                        <label for="dindin">Dinheiro</label>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <label for="confirm">Arraste até o fim:</label>
+                <input type="range" min="1" max="100" value="1" name="confirm" id="confirm">
+            </div>
+        </div>
+        <button type="submit">Enviar</button>
+        <p id="resposta" class="invis"></p>
+    </form>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Número Rifa</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Telefone</th>
+                    <th scope="col">Quem vendeu</th>
+                    <th scope="col">Método pagamento</th>
+                    <th scope="col">Data e hora</th>
+                    {% if session['superuser'] %}
+                        <th scope="col" style="color: red;">Deletar</th>
+                    {%endif%}
+                </tr>
+            </thead>
+            <tbody>
+                {% for rifa in rifas %}
+                <tr>
+                    <th scope="row">{{ rifa[0] }}</th>
+                    <td>{{ rifa[1] }}</td>
+                    <td>{{ rifa[2] }}</td>
+                    <td>{{ rifa[3] }}</td>
+                    <td>{{ rifa[4] }}</td>
+                    <td>{{ rifa[5] }}</td>
+                    {% if session['superuser'] %}
+                        <td>
+                            <form class="delete" method="post" action="{{ url_for('admindelete', idrifa=rifa[0]) }}">
+                                <button type="submit">Remover</button>
+                            </form>
+                        </td>
+                    {%endif%}
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $("#venderRifona").submit(function(e) {
+        e.preventDefault();
+        var form = $(this);
+        if ($('#confirm').val() == 100) {
+            var resposta = $('#resposta');
+            $.ajax({
+                type: "POST",
+                url: '/registrarVenda',
+                data: form.serialize(),
+                success: function () {
+                    resposta.text("Rifa "+  document.getElementById("numeroRifa").value +" registrada com sucesso! (reinicie a página para atualizar a lista)");
+                    resposta.removeClass("invis erro");
+                    resposta.addClass("sucesso");
+                },
+                error: function () {
+                    resposta.text("Número de rifa já registrado");
+                    resposta.removeClass("invis sucesso");
+                    resposta.addClass("erro");
+                }
+            });
+        } else {
+            var resposta = $('#resposta');
+            resposta.text("Arraste o slide até o final para confirmar");
+            resposta.removeClass("invis sucesso");
+            resposta.addClass("erro");
+        }
+        $('#confirm').val(0);
+    });
+</script>
+{% endblock %}

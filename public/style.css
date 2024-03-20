@@ -1,0 +1,30 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    min-width: 100vw;
+    gap: 1em;
+    padding-top: 1em;
+    margin: 0;
+    min-height: 100vh;
+    padding: 0;
+}
+
+form:not(.delete) {
+    background-color: gray;
+    border-radius: .5em;
+    padding: 1em;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+}
+
+@media screen and (max-width: 470px) {
+    h1 {
+        font-size: 150%;
+    }
+}

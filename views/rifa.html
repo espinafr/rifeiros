@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block additional_styles %}
+<style>
+    a {
+        color: black;
+        text-decoration: none;
+        transition: .2s;
+    }
+    a:hover {
+        color: rgb(61, 61, 61);
+        text-shadow: -1px 1px 1px rgba(255, 211, 161, 0.5), 1px 1px 1px rgb(255, 211, 161, .5), -1px -1px 1px rgb(255, 211, 161, .5), 1px -1px 1px rgb(255, 211, 161, .5);
+    }
+    .recibo {
+        background-color: rgb(255, 198, 133);
+        border-radius: .5em;
+        padding: 1em;
+    }
+
+    div.recibo {
+        font-size: x-large;
+    }
+
+    .negrito {
+        font-weight: bolder;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<body>
+    {% if rifa == [] %}
+        <h1 style="color: red; font-weight: bolder;">Nenhuma rifa achada com o número especificado.</h1>
+    {%else%}
+        <div class="recibo">
+            <p><span class="negrito">Nome:</span> {{rifa[0][1]}}</p>
+            <p><span class="negrito">Telefone:</span> {{rifa[0][2][:-6] + "****"}}</p></p>
+            <p><span class="negrito">Vendedor:</span> {{rifa[0][3]}}</p>
+            <p><span class="negrito">Data de compra:</span> {{rifa[0][5]}}</p>
+        </div>
+    {%endif%}
+    <a href="{{ url_for('index') }}" class="recibo">Voltar</a>
+</body>
+{% endblock %}
