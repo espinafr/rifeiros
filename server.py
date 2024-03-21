@@ -75,7 +75,7 @@ def registrarVenda():
     pagamento = request.form['tipoPagamento']
     nomeVendedor = request.form['nomeVendedor']
     try:
-        access_db('INSERT INTO rifas VALUES (?, ?, ?, ?, ?, ?)', (numeroRifa, nomeComprador, telefone, nomeVendedor, pagamento, datetime.now().strftime("%m/%d/%Y %H:%M:%S")), 'c') #- timedelta(hours=0)
+        access_db('INSERT INTO rifas VALUES (?, ?, ?, ?, ?, ?)', (numeroRifa, nomeComprador, telefone, nomeVendedor, pagamento, datetime.now().strftime("%d/%m/%Y %H:%M:%S")), 'c') #- timedelta(hours=0)
         result = requests.post(app.config['WEBHOOK'], json = {"content" : f"**Comprador:** {nomeComprador}\n**Número rifa:** {numeroRifa}\n**Telefone comprador:** {telefone}\n**Pagamento**: {pagamento}\n**Vendedor:** {nomeVendedor}", "username" : "banco central (fortaleza)"})
         try:
             result.raise_for_status()
