@@ -37,6 +37,7 @@
     {% if rifa == [] %}
         <h1 style="color: red; font-weight: bolder;">Nenhuma rifa achada com o número especificado.</h1>
     {%else%}
+        <h1>Recibo da rifa <span style="text-decoration: underline;">número {{rifa[0][0]}}</span></h1>
         <div class="recibo">
             <p><span class="negrito">Nome:</span> {{rifa[0][1]}}</p>
             <p><span class="negrito">Telefone:</span> {{rifa[0][2][:-6] + "****"}}</p>

@@ -6,14 +6,12 @@ from flask import Flask, request, render_template, abort, url_for, redirect, ses
 from werkzeug.exceptions import HTTPException
 from datetime import datetime, timedelta
 import sqlite3
-import requests
 
 app = Flask(__name__, static_folder='public', template_folder='views')
 
 app.secret_key = os.environ.get('SECRET')
 app.config['USERS'] = {os.environ.get('USER'): os.environ.get('SENHA'), os.environ.get('SUSER'): os.environ.get('SSENHA')}
 app.config['SUPERUSER'] = os.environ.get('SUSER')
-app.config['WEBHOOK'] = os.environ.get('DCWEBHOOK')
 
 def access_db(command: str, params, method: str):
     conn = sqlite3.connect('database.db')
@@ -76,13 +74,6 @@ def registrarVenda():
     nomeVendedor = request.form['nomeVendedor']
     try:
         access_db('INSERT INTO rifas VALUES (?, ?, ?, ?, ?, ?)', (numeroRifa, nomeComprador, telefone, nomeVendedor, pagamento, datetime.now().strftime("%d/%m/%Y %H:%M:%S")), 'c') #- timedelta(hours=0)
-        result = requests.post(app.config['WEBHOOK'], json = {"content" : f"**Comprador:** {nomeComprador}\n**Número rifa:** {numeroRifa}\n**Telefone comprador:** {telefone}\n**Pagamento**: {pagamento}\n**Vendedor:** {nomeVendedor}", "username" : "banco central (fortaleza)"})
-        try:
-            result.raise_for_status()
-        except requests.exceptions.HTTPError as err:
-            print(err)
-        else:
-            print("Payload enviado com sucesso, código {}.".format(result.status_code))
     except Exception as e:
         print(e)
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'} 

@@ -61,9 +61,21 @@
         cursor: pointer;
     }
 
+    .negrito {
+        font-weight: bolder;
+    }
+
+    .antiflex {
+        min-width: 60%;
+    }
+
     @media screen and (max-width: 1160px) {
         .altForm {
             flex-direction: column;
+        }
+
+        .antiflex {
+            min-width: 100%;
         }
 
         th, td {
@@ -125,6 +137,9 @@
         <button type="submit">Enviar</button>
         <p id="resposta" class="invis"></p>
     </form>
+    <div class="antiflex">
+        <p><span class="negrito">Rifas vendidas: </span>{{rifas|length}}<br><span class="negrito">Ganho estimado (a 5 reais p/rifa): </span>R${{(rifas|length)*5}}</p>
+    </div>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
