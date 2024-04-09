@@ -69,6 +69,11 @@
         min-width: 60%;
     }
 
+    a {
+        color: rgb(0, 202, 0);
+        text-decoration: underline;
+    }
+
     @media screen and (max-width: 1160px) {
         .altForm {
             flex-direction: column;
@@ -97,6 +102,10 @@
 {% block content %}
 <body>
     <a id="Voltar" href="{{ url_for('index') }}">Voltar</a>
+    <form method="post" action="{{ url_for('gerararquivo') }}">
+        <p>Sugestão: Use <a target="_blank" href="https://pt.piliapp.com/random/wheel/">esse site</a> para sortear as rifas</p>
+        <button type="submit">Gerar arquivo com rifas</button>
+    </form>
     <form id="venderRifona">
         <h1>Vender Rifa</h1>
         <div class="altForm">

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from flask import Flask, request, render_template, abort, url_for, redirect, session, json
+from flask import Flask, request, render_template, abort, url_for, redirect, session, json, send_file
 from werkzeug.exceptions import HTTPException
 from datetime import datetime, timedelta
 import sqlite3
@@ -12,6 +12,9 @@ app = Flask(__name__, static_folder='public', template_folder='views')
 app.secret_key = os.environ.get('SECRET')
 app.config['USERS'] = {os.environ.get('USER'): os.environ.get('SENHA'), os.environ.get('SUSER'): os.environ.get('SSENHA')}
 app.config['SUPERUSER'] = os.environ.get('SUSER')
+
+UPLOAD_FOLDER = 'public'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def access_db(command: str, params, method: str):
     conn = sqlite3.connect('database.db')
@@ -78,7 +81,17 @@ def registrarVenda():
         print(e)
         return json.dumps({'success':False}), 400, {'ContentType':'application/json'} 
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
-        
+
+@app.route('/admin/gerararquivo', methods=['POST'])    
+def gerararquivo():
+    if not 'username' in session:
+        abort(401)
+    rifas = access_db('SELECT id FROM rifas', (), 'f')
+    with open(os.path.join(app.config['UPLOAD_FOLDER'], 'numeros.txt'), 'w') as arquivo:
+        for rifa in rifas:
+            arquivo.write("%s\n" % rifa)
+        print('Gerou novo arquivo')
+    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], 'numeros.txt'), as_attachment=True)
 
 @app.route('/admin')
 def admin():
